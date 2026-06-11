@@ -97,3 +97,220 @@ ECommerce/
 - 8 örnek ürün
 - 3 kupon kodu: `NOVA10`, `INDIRIM`, `YENIYIL`
 - 1 admin kullanıcı: `admin@novamart.com` / `Admin123!`
+
+# 🛒 NovaMart — Full-Featured ASP.NET Core 8 E-Commerce Template
+
+A modern and scalable e-commerce application built with **ASP.NET Core 8 MVC**, **Entity Framework Core 8**, **ASP.NET Identity**, and **PostgreSQL/SQL Server**.
+
+## 🚀 Features
+
+- ✅ ASP.NET Core 8 MVC Architecture
+- ✅ Entity Framework Core 8
+- ✅ PostgreSQL & SQL Server Support
+- ✅ ASP.NET Core Identity Authentication
+- ✅ Role-Based Authorization (Admin / Customer)
+- ✅ Product & Category Management
+- ✅ Shopping Cart (Guest & Authenticated Users)
+- ✅ Order Management System
+- ✅ Coupon & Discount Support
+- ✅ Wishlist Functionality
+- ✅ Customer Reviews
+- ✅ Inventory Tracking
+- ✅ iyzico Payment Integration
+- ✅ Responsive Bootstrap 5 UI
+- ✅ Seed Data Generation
+
+---
+
+## 📸 Screenshots
+
+> Add screenshots of your Home Page, Product Details, Shopping Cart, Checkout, and Admin Dashboard here.
+
+---
+
+## 🛠 Technologies
+
+| Technology | Version |
+|------------|----------|
+| ASP.NET Core MVC | 8.0 |
+| Entity Framework Core | 8.0 |
+| ASP.NET Identity | 8.0 |
+| PostgreSQL | Latest |
+| SQL Server | Optional |
+| Bootstrap | 5 |
+| iyzico API | Latest |
+
+---
+
+## 📁 Project Structure
+
+```text
+ECommerce/
+├── Areas/Admin/
+│   ├── Controllers/
+│   ├── Models/
+│   └── Views/
+├── Controllers/
+├── Data/
+├── Models/
+├── Services/
+├── Views/
+├── wwwroot/
+├── appsettings.json
+└── Program.cs
+```
+
+---
+
+## ⚙️ Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/yourusername/NovaMart.git
+cd NovaMart
+```
+
+### 2. Configure Database
+
+Update the connection string in:
+
+```json
+appsettings.json
+```
+
+Example PostgreSQL connection:
+
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Host=localhost;Database=novamart;Username=postgres;Password=YOUR_PASSWORD"
+}
+```
+
+---
+
+### 3. Apply Migrations
+
+```bash
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+```
+
+If EF CLI is not installed:
+
+```bash
+dotnet tool install --global dotnet-ef
+```
+
+---
+
+### 4. Run the Application
+
+```bash
+dotnet run
+```
+
+---
+
+## 🔐 Default Admin Account
+
+| Field | Value |
+|---------|---------|
+| Email | admin@novamart.com |
+| Password | Admin123! |
+
+Admin Panel:
+
+```text
+https://localhost:5001/Admin
+```
+
+---
+
+## 💳 iyzico Sandbox Setup
+
+1. Create a free sandbox account.
+2. Copy your API Key and Secret Key.
+3. Add them to `appsettings.json`.
+
+### Test Card
+
+| Field | Value |
+|---------|---------|
+| Card Number | 5528790000000008 |
+| Expiry | 12/30 |
+| CVV | 123 |
+
+---
+
+## 👥 User Roles
+
+### Admin
+
+- Manage Products
+- Manage Categories
+- Manage Orders
+- Manage Users
+- Access Dashboard
+
+### Customer
+
+- Browse Products
+- Add to Cart
+- Place Orders
+- Manage Profile
+- Track Orders
+
+### Guest
+
+- Browse Products
+- Session-Based Cart
+
+---
+
+## 🌱 Seed Data
+
+The application automatically generates:
+
+- 6 Categories
+- 8 Sample Products
+- 3 Discount Coupons:
+  - NOVA10
+  - INDIRIM
+  - YENIYIL
+- 1 Administrator Account
+
+---
+
+## 📈 Future Improvements
+
+- Product Variants
+- Multi-Vendor Marketplace
+- Email Notifications
+- Invoice Generation
+- Advanced Analytics Dashboard
+- Product Recommendations
+- Mobile Application API
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss your ideas.
+
+---
+
+## 📄 License
+
+This project is available for educational, portfolio, and commercial starter-project use.
+
+---
+
+## 👨‍💻 Author
+
+**Pelin Bingöl**
+
+ASP.NET Core Developer
+
+GitHub: https://github.com/yourusername
+LinkedIn: https://linkedin.com/in/yourprofile
