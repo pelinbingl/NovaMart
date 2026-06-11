@@ -1,0 +1,159 @@
+@model ECommerce.Models.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "Ödeme";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="max-width:1100px;margin:0 auto;padding:2.5rem 2rem;">
+    <h1 style="font-size:1.5rem;font-weight:700;margin-bottom:2rem;letter-spacing:-1px;">Siparişi Tamamla</h1>
+
+    <form asp-controller="Order" asp-action="Checkout" method="post">
+        @Html.AntiForgeryToken()
+        <div style="display:grid;grid-template-columns:1fr 360px;gap:2rem;align-items:start;">
+
+            <!-- SOL: Adres -->
+            <div>
+                <div style="background:var(--dark2);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;">
+                    <h2 style="font-size:1rem;font-weight:700;margin-bottom:1.25rem;">Teslimat Adresi</h2>
+
+                    @if (Model.Addresses.Any())
+                    {
+                        <div style="display:grid;gap:.75rem;margin-bottom:1.5rem;">
+                            @foreach (var addr in Model.Addresses)
+                            {
+                                <label style="display:flex;align-items:flex-start;gap:.75rem;background:var(--dark3);border:1.5px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem;cursor:pointer;">
+                                    <input type="radio" name="SelectedAddressId" value="@addr.Id" style="margin-top:.15rem;accent-color:var(--primary);" />
+                                    <div>
+                                        <div style="font-weight:600;font-size:.875rem;">@addr.Title — @addr.FullName</div>
+                                        <div style="font-size:.8rem;color:var(--muted);margin-top:.2rem;">@addr.AddressLine, @addr.District / @addr.City</div>
+                                        <div style="font-size:.78rem;color:var(--muted);">@addr.Phone</div>
+                                    </div>
+                                </label>
+                            }
+                        </div>
+                        <button type="button"
+                                onclick="var el=document.getElementById('new-addr');el.style.display=el.style.display==='none'?'block':'none'"
+                                style="background:none;border:none;color:var(--primary);font-size:.875rem;cursor:pointer;font-family:inherit;">
+                            + Yeni adres ekle
+                        </button>
+                        <div id="new-addr" style="display:none;margin-top:1rem;">
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">
+                                <div>
+                                    <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:.35rem;">Adres Başlığı</label>
+                                    <input name="NewAddressTitle" style="width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.625rem .875rem;color:white;font-size:.875rem;outline:none;font-family:inherit;" placeholder="Ev / İş" />
+                                </div>
+                                <div>
+                                    <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:.35rem;">Ad Soyad</label>
+                                    <input name="NewFullName" style="width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.625rem .875rem;color:white;font-size:.875rem;outline:none;font-family:inherit;" placeholder="Tam adınız" />
+                                </div>
+                                <div>
+                                    <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:.35rem;">Telefon</label>
+                                    <input name="NewPhone" type="tel" style="width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.625rem .875rem;color:white;font-size:.875rem;outline:none;font-family:inherit;" placeholder="0532 000 00 00" />
+                                </div>
+                                <div style="grid-column:1/-1">
+                                    <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:.35rem;">Adres</label>
+                                    <input name="NewAddressLine" style="width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.625rem .875rem;color:white;font-size:.875rem;outline:none;font-family:inherit;" placeholder="Mahalle, sokak, no..." />
+                                </div>
+                                <div>
+                                    <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:.35rem;">İlçe</label>
+                                    <input name="NewDistrict" style="width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.625rem .875rem;color:white;font-size:.875rem;outline:none;font-family:inherit;" placeholder="Kadıköy" />
+                                </div>
+                                <div>
+                                    <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:.35rem;">Şehir</label>
+                                    <input name="NewCity" style="width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.625rem .875rem;color:white;font-size:.875rem;outline:none;font-family:inherit;" placeholder="İstanbul" />
+                                </div>
+                                <div>
+                                    <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:.35rem;">Posta Kodu</label>
+                                    <input name="NewZip" style="width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.625rem .875rem;color:white;font-size:.875rem;outline:none;font-family:inherit;" placeholder="34710" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">
+                            <input type="hidden" name="SelectedAddressId" value="0" />
+                            <div>
+                                <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:.35rem;">Adres Başlığı</label>
+                                <input name="NewAddressTitle" style="width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.625rem .875rem;color:white;font-size:.875rem;outline:none;font-family:inherit;" placeholder="Ev / İş" />
+                            </div>
+                            <div>
+                                <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:.35rem;">Ad Soyad</label>
+                                <input name="NewFullName" style="width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.625rem .875rem;color:white;font-size:.875rem;outline:none;font-family:inherit;" placeholder="Tam adınız" />
+                            </div>
+                            <div>
+                                <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:.35rem;">Telefon</label>
+                                <input name="NewPhone" type="tel" style="width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.625rem .875rem;color:white;font-size:.875rem;outline:none;font-family:inherit;" placeholder="0532 000 00 00" />
+                            </div>
+                            <div style="grid-column:1/-1">
+                                <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:.35rem;">Adres</label>
+                                <input name="NewAddressLine" style="width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.625rem .875rem;color:white;font-size:.875rem;outline:none;font-family:inherit;" placeholder="Mahalle, sokak, no..." />
+                            </div>
+                            <div>
+                                <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:.35rem;">İlçe</label>
+                                <input name="NewDistrict" style="width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.625rem .875rem;color:white;font-size:.875rem;outline:none;font-family:inherit;" placeholder="Kadıköy" />
+                            </div>
+                            <div>
+                                <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:.35rem;">Şehir</label>
+                                <input name="NewCity" style="width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.625rem .875rem;color:white;font-size:.875rem;outline:none;font-family:inherit;" placeholder="İstanbul" />
+                            </div>
+                            <div>
+                                <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:.35rem;">Posta Kodu</label>
+                                <input name="NewZip" style="width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.625rem .875rem;color:white;font-size:.875rem;outline:none;font-family:inherit;" placeholder="34710" />
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Kupon -->
+                <div style="background:var(--dark2);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:1.5rem;">
+                    <h2 style="font-size:1rem;font-weight:700;margin-bottom:1rem;">Kupon Kodu</h2>
+                    <input asp-for="CouponCode" style="width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.625rem .875rem;color:white;font-size:.875rem;outline:none;font-family:inherit;" placeholder="Kupon kodunu girin (örn: NOVA10)" />
+                    <p style="font-size:.75rem;color:var(--muted);margin-top:.5rem;">Geçerli: NOVA10, INDIRIM, YENIYIL</p>
+                </div>
+            </div>
+
+            <!-- SAĞ: Sipariş Özeti -->
+            <div style="background:var(--dark2);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:1.75rem;position:sticky;top:90px;">
+                <h2 style="font-size:1rem;font-weight:700;margin-bottom:1.5rem;">Sipariş Özeti</h2>
+
+                @foreach (var item in Model.CartItems)
+                {
+                    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,.05);">
+                        <div style="width:44px;height:44px;background:var(--dark3);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;">
+                            @item.Product?.EmojiIcon
+                        </div>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-size:.8rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@item.Product?.Name</div>
+                            <div style="font-size:.72rem;color:var(--muted);">x@item.Quantity</div>
+                        </div>
+                        <div style="font-weight:700;font-size:.9rem;flex-shrink:0;">₺@((item.Product?.Price * item.Quantity)?.ToString("N0"))</div>
+                    </div>
+                }
+
+                <div style="display:flex;justify-content:space-between;padding:.5rem 0;font-size:.875rem;">
+                    <span style="color:var(--muted);">Ara Toplam</span>
+                    <span style="font-weight:600;">₺@Model.Subtotal.ToString("N0")</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:.5rem 0;font-size:.875rem;">
+                    <span style="color:var(--muted);">Kargo</span>
+                    <span style="font-weight:600;color:var(--accent);">@(Model.Shipping > 0 ? "₺" + Model.Shipping.ToString("N2") : "Ücretsiz 🎉")</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:.5rem 0;font-size:.875rem;">
+                    <span style="color:var(--muted);">KDV (%18)</span>
+                    <span style="font-weight:600;">₺@Model.Tax.ToString("N0")</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:.75rem 0;font-size:1.1rem;font-weight:700;border-top:1px solid rgba(255,255,255,.07);margin-top:.5rem;">
+                    <span>Toplam</span>
+                    <span style="color:var(--primary);">₺@Model.Total.ToString("N0")</span>
+                </div>
+
+                <button type="submit" style="width:100%;background:linear-gradient(135deg,#FF3D57,#FF8C42);color:white;border:none;border-radius:12px;padding:1rem;font-size:1rem;font-weight:700;cursor:pointer;margin-top:1rem;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem;">
+                    <i class="fas fa-lock"></i> İyzico ile Öde
+                </button>
+                <p style="text-align:center;font-size:.72rem;color:var(--muted);margin-top:.75rem;">256-bit SSL şifrelemeli güvenli ödeme</p>
+            </div>
+
+        </div>
+    </form>
+</div>

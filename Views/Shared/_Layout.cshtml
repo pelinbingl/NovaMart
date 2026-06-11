@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — NovaMart</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a asp-controller="Home" asp-action="Index" class="navbar-brand">Nova<span>Mart</span></a>
+
+        <div class="nav-links">
+            <a asp-controller="Home" asp-action="Index"
+               class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">Anasayfa</a>
+            <a asp-controller="Category" asp-action="Index"
+               class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Category" ? "active" : "")">Kategoriler</a>
+            <a asp-controller="Product" asp-action="Index">Ürünler</a>
+            <a href="#">Kampanyalar</a>
+            <a href="#">Hakkımızda</a>
+        </div>
+
+        <div class="navbar-right">
+            <div class="search-bar">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+                </svg>
+                <input type="text" placeholder="Ürün, kategori ara..." />
+            </div>
+
+            <a class="btn-icon" href="#" title="Favoriler">
+                <i class="far fa-heart"></i>
+            </a>
+
+            <a class="btn-icon" asp-controller="Cart" asp-action="Index" title="Sepetim">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-badge">3</span>
+            </a>
+
+            <a class="btn-icon" href="#" title="Hesabım">
+                <i class="far fa-user"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- PAGE CONTENT -->
+    @RenderBody()
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-grid">
+            <div>
+                <div class="navbar-brand" style="display:inline-block;margin-bottom:.5rem;">Nova<span style="-webkit-text-fill-color:white">Mart</span></div>
+                <p class="footer-brand-text">Türkiye'nin en iyi alışveriş deneyimini sunuyoruz. Binlerce ürün, hızlı teslimat ve güvenli ödeme.</p>
+                <div class="social-links">
+                    <div class="social-btn"><i class="fab fa-instagram"></i></div>
+                    <div class="social-btn"><i class="fab fa-twitter"></i></div>
+                    <div class="social-btn"><i class="fab fa-facebook-f"></i></div>
+                    <div class="social-btn"><i class="fab fa-youtube"></i></div>
+                </div>
+            </div>
+            <div>
+                <div class="footer-col-title">Alışveriş</div>
+                <div class="footer-links">
+                    <a href="#">Tüm Ürünler</a>
+                    <a href="#">Yeni Gelenler</a>
+                    <a href="#">Kampanyalar</a>
+                    <a href="#">En Çok Satanlar</a>
+                    <a href="#">Markalar</a>
+                </div>
+            </div>
+            <div>
+                <div class="footer-col-title">Müşteri Hizmetleri</div>
+                <div class="footer-links">
+                    <a href="#">Siparişlerim</a>
+                    <a href="#">İade & Değişim</a>
+                    <a href="#">Kargo Takibi</a>
+                    <a href="#">SSS</a>
+                    <a href="#">İletişim</a>
+                </div>
+            </div>
+            <div>
+                <div class="footer-col-title">Kurumsal</div>
+                <div class="footer-links">
+                    <a href="#">Hakkımızda</a>
+                    <a href="#">Kariyer</a>
+                    <a href="#">Blog</a>
+                    <a href="#">Gizlilik Politikası</a>
+                    <a href="#">Kullanım Koşulları</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 NovaMart. Tüm hakları saklıdır.</span>
+            <div class="payment-icons" style="margin-top:0;">
+                <span class="pay-icon">VISA</span>
+                <span class="pay-icon">MC</span>
+                <span class="pay-icon">AMEX</span>
+                <span class="pay-icon">PayTR</span>
+                <span class="pay-icon">İyzico</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">
+        <span class="toast-icon">✅</span>
+        <span id="toast-msg">Ürün sepete eklendi!</span>
+    </div>
+
+    <script src="~/js/site.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

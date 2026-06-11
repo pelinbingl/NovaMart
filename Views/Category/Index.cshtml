@@ -1,0 +1,248 @@
+@{
+    ViewData["Title"] = "Kategoriler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="breadcrumb">
+    <a asp-controller="Home" asp-action="Index">Anasayfa</a>
+    <span class="sep">/</span>
+    <span class="current">Elektronik</span>
+</div>
+
+<div class="category-layout">
+
+    <!-- FILTER SIDEBAR -->
+    <aside class="filter-sidebar">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+            <h3 style="font-size:1rem;font-weight:700;">Filtrele</h3>
+            <button onclick="clearFilters()" style="background:none;border:none;color:var(--primary);font-size:.78rem;font-weight:600;cursor:pointer;">Temizle</button>
+        </div>
+
+        <!-- Kategoriler -->
+        <div class="filter-section">
+            <div class="filter-title">Kategori</div>
+            @{
+                var cats = new[] {
+                    ("Telefon & Tablet", 1842),
+                    ("Bilgisayar", 923),
+                    ("Ses Sistemleri", 641),
+                    ("Akıllı Saatler", 384),
+                    ("Fotoğraf & Kamera", 287),
+                    ("Oyun & Konsol", 512),
+                };
+            }
+            @foreach (var (cat, count) in cats)
+            {
+                <label class="filter-check">
+                    <input type="checkbox" @(cat == "Telefon & Tablet" ? "checked" : "") onchange="applyFilters()" />
+                    <div class="custom-check"></div>
+                    <span class="filter-check-label">@cat</span>
+                    <span class="filter-count">@count</span>
+                </label>
+            }
+        </div>
+
+        <!-- Marka -->
+        <div class="filter-section">
+            <div class="filter-title">Marka</div>
+            @{
+                var brands = new[] { ("Apple", 423), ("Samsung", 387), ("Sony", 156), ("Xiaomi", 244), ("Huawei", 198) };
+            }
+            @foreach (var (brand, count) in brands)
+            {
+                <label class="filter-check">
+                    <input type="checkbox" onchange="applyFilters()" />
+                    <div class="custom-check"></div>
+                    <span class="filter-check-label">@brand</span>
+                    <span class="filter-count">@count</span>
+                </label>
+            }
+        </div>
+
+        <!-- Fiyat Aralığı -->
+        <div class="filter-section">
+            <div class="filter-title">Fiyat Aralığı</div>
+            <div class="price-range">
+                <div class="price-labels">
+                    <span>₺0</span>
+                    <span id="priceVal">₺70.000</span>
+                </div>
+                <input type="range" class="range-input" min="0" max="100000" value="70000" step="1000"
+                       oninput="document.getElementById('priceVal').textContent = '₺' + parseInt(this.value).toLocaleString('tr-TR')" />
+            </div>
+        </div>
+
+        <!-- Puan -->
+        <div class="filter-section">
+            <div class="filter-title">Minimum Puan</div>
+            @{
+                var ratings = new[] { ("4.5+", 1240), ("4.0+", 2187), ("3.5+", 3044) };
+            }
+            @foreach (var (rate, count) in ratings)
+            {
+                <label class="filter-check">
+                    <input type="radio" name="rating" onchange="applyFilters()" />
+                    <div class="custom-check" style="border-radius:50%;"></div>
+                    <span class="filter-check-label">
+                        <span style="color:var(--secondary);">★</span> @rate
+                    </span>
+                    <span class="filter-count">@count</span>
+                </label>
+            }
+        </div>
+
+        <!-- Renk -->
+        <div class="filter-section">
+            <div class="filter-title">Renk</div>
+            <div class="color-filter-row">
+                @{
+                    var colors = new[] { "#1a1a1a", "#ffffff", "#c0392b", "#3498db", "#2ecc71", "#e67e22", "#9b59b6", "#d4c5a9" };
+                }
+                @foreach (var c in colors)
+                {
+                    <div class="color-filter-btn" style="background:@c;@(c == "#ffffff" ? "border-color:rgba(255,255,255,0.15)" : "")"
+                         onclick="this.classList.toggle('active')"></div>
+                }
+            </div>
+        </div>
+
+        <button class="btn-primary" style="width:100%;justify-content:center;margin-top:.5rem;" onclick="showToast('🔍 Filtreler uygulandı')">
+            <i class="fas fa-filter"></i> Filtrele
+        </button>
+    </aside>
+
+    <!-- PRODUCTS AREA -->
+    <div class="category-content">
+
+        <!-- Page Header -->
+        <div style="margin-bottom:1.5rem;">
+            <h1 class="section-title">Elektronik</h1>
+            <p style="color:var(--muted);font-size:.875rem;margin-top:.375rem;">Telefon, tablet, bilgisayar ve daha fazlası</p>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="category-toolbar">
+            <p class="result-count"><strong>4.589</strong> ürün bulundu</p>
+            <div style="display:flex;align-items:center;gap:.875rem;">
+                <select class="sort-select">
+                    <option>Önerilen</option>
+                    <option>En Düşük Fiyat</option>
+                    <option>En Yüksek Fiyat</option>
+                    <option>En Çok Satan</option>
+                    <option>En Yeni</option>
+                    <option>En Yüksek Puan</option>
+                </select>
+                <div class="view-toggle">
+                    <div class="view-btn active" title="Grid görünüm" onclick="setView('grid',this)">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M1 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1zM1 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1zM1 12a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z"/>
+                        </svg>
+                    </div>
+                    <div class="view-btn" title="Liste görünüm" onclick="setView('list',this)">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Filters -->
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem;" id="active-filters">
+            <span style="font-size:.78rem;color:var(--muted);padding:.25rem 0;">Aktif filtreler:</span>
+            @{
+                var activeFilters = new[] { "Telefon & Tablet", "₺0 - ₺70.000", "4.5+ puan" };
+            }
+            @foreach (var f in activeFilters)
+            {
+                <span style="background:rgba(255,61,87,0.12);border:1px solid rgba(255,61,87,0.25);color:var(--primary);font-size:.75rem;font-weight:600;padding:.25rem .75rem;border-radius:9999px;display:flex;align-items:center;gap:.375rem;cursor:pointer;" onclick="this.remove()">
+                    @f <i class="fas fa-times" style="font-size:.6rem;"></i>
+                </span>
+            }
+        </div>
+
+        <!-- Products Grid -->
+        <div class="products-grid" id="products-container">
+            @{
+                var catProducts = new[] {
+                    new { Id=1, Emoji="📱", Name="Samsung Galaxy S24 Ultra", Category="Telefon", Price="₺45.999", OldPrice="₺52.999", Rating="4.8", Reviews="2.1K", Badge="sale", BadgeText="%13 İndirim" },
+                    new { Id=2, Emoji="🍎", Name="iPhone 15 Pro Max 256GB", Category="Telefon", Price="₺62.999", OldPrice="", Rating="4.9", Reviews="3.7K", Badge="hot", BadgeText="🔥 Hot" },
+                    new { Id=3, Emoji="📱", Name="Xiaomi 14 Ultra 512GB", Category="Telefon", Price="₺34.999", OldPrice="₺39.999", Rating="4.7", Reviews="891", Badge="sale", BadgeText="%12 İndirim" },
+                    new { Id=4, Emoji="📲", Name="Google Pixel 8 Pro", Category="Telefon", Price="₺38.999", OldPrice="", Rating="4.6", Reviews="543", Badge="new", BadgeText="Yeni" },
+                    new { Id=5, Emoji="💻", Name="MacBook Pro 14\" M3 Pro", Category="Bilgisayar", Price="₺89.999", OldPrice="", Rating="4.9", Reviews="1.2K", Badge="hot", BadgeText="🔥 Hot" },
+                    new { Id=6, Emoji="🖥️", Name="Dell XPS 15 OLED i9", Category="Bilgisayar", Price="₺56.499", OldPrice="₺64.999", Rating="4.7", Reviews="387", Badge="sale", BadgeText="%13 İndirim" },
+                    new { Id=7, Emoji="🎧", Name="Sony WH-1000XM5", Category="Kulaklık", Price="₺8.499", OldPrice="₺10.999", Rating="4.8", Reviews="2.4K", Badge="sale", BadgeText="%22 İndirim" },
+                    new { Id=8, Emoji="⌚", Name="Apple Watch Ultra 2", Category="Akıllı Saat", Price="₺32.999", OldPrice="", Rating="4.8", Reviews="756", Badge="new", BadgeText="Yeni" },
+                };
+            }
+            @foreach (var p in catProducts)
+            {
+                <div class="product-card" onclick="window.location='/Product/Detail/@p.Id'">
+                    <div class="product-img">
+                        <span>@p.Emoji</span>
+                        <div class="product-actions">
+                            <div class="action-btn" onclick="event.stopPropagation()"><i class="far fa-heart" style="font-size:.875rem;"></i></div>
+                            <div class="action-btn" onclick="event.stopPropagation()"><i class="far fa-eye" style="font-size:.875rem;"></i></div>
+                        </div>
+                        <span class="product-badge badge-@p.Badge">@p.BadgeText</span>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category">@p.Category</div>
+                        <div class="product-name">@p.Name</div>
+                        <div class="product-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-count">@p.Rating (@p.Reviews)</span>
+                        </div>
+                        <div class="product-footer">
+                            <div>
+                                <span class="product-price">@p.Price</span>
+                                @if (!string.IsNullOrEmpty(p.OldPrice))
+                                {
+                                    <span class="product-price-old">@p.OldPrice</span>
+                                }
+                            </div>
+                            <button class="add-to-cart" onclick="event.stopPropagation();addToCart('@p.Name')">
+                                <i class="fas fa-plus" style="font-size:.8rem;"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- PAGINATION -->
+        <div class="pagination">
+            <div class="page-btn"><i class="fas fa-chevron-left" style="font-size:.75rem;"></i></div>
+            <div class="page-btn active">1</div>
+            <div class="page-btn">2</div>
+            <div class="page-btn">3</div>
+            <div class="page-btn">...</div>
+            <div class="page-btn">48</div>
+            <div class="page-btn"><i class="fas fa-chevron-right" style="font-size:.75rem;"></i></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+function setView(type, btn) {
+    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const grid = document.getElementById('products-container');
+    if (type === 'list') {
+        grid.style.gridTemplateColumns = '1fr';
+    } else {
+        grid.style.gridTemplateColumns = '';
+    }
+}
+
+function applyFilters() {
+    showToast('🔍 Filtreler güncellendi');
+}
+
+function clearFilters() {
+    document.querySelectorAll('.filter-check input').forEach(cb => cb.checked = false);
+    showToast('✅ Filtreler temizlendi');
+}
+</script>
+}

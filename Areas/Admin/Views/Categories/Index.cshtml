@@ -1,0 +1,41 @@
+@model IEnumerable<ECommerce.Models.Category>
+@{
+    ViewData["Title"] = "Kategoriler";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+    <h1 style="font-size:1.25rem;font-weight:700;">Kategori Yönetimi</h1>
+    <a asp-area="Admin" asp-controller="Categories" asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Yeni Kategori
+    </a>
+</div>
+<div class="table-card">
+    <table>
+        <thead><tr><th>Kategori</th><th>Slug</th><th>Sıra</th><th>Durum</th><th>İşlemler</th></tr></thead>
+        <tbody>
+            @foreach (var cat in Model)
+            {
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:.625rem;">
+                            <span style="font-size:1.25rem;">@cat.IconEmoji</span>
+                            <span style="font-weight:600;">@cat.Name</span>
+                        </div>
+                    </td>
+                    <td style="font-family:monospace;font-size:.8rem;color:var(--muted);">@cat.Slug</td>
+                    <td>@cat.SortOrder</td>
+                    <td><span class="badge @(cat.IsActive ? "badge-success" : "badge-muted")">@(cat.IsActive ? "Aktif" : "Pasif")</span></td>
+                    <td>
+                        <div style="display:flex;gap:.375rem;">
+                            <a asp-area="Admin" asp-controller="Categories" asp-action="Edit" asp-route-id="@cat.Id" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                            <form asp-area="Admin" asp-controller="Categories" asp-action="Delete" asp-route-id="@cat.Id" method="post" style="display:inline;" onsubmit="return confirm('@cat.Name silinsin mi?')">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

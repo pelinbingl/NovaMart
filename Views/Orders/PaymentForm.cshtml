@@ -1,0 +1,22 @@
+@{
+    ViewData["Title"] = "Ödeme";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var html = ViewData["IyzicoHtml"]?.ToString();
+}
+<div style="max-width:700px;margin:0 auto;padding:2.5rem 2rem;">
+    <h1 style="font-size:1.5rem;font-weight:700;margin-bottom:.5rem;">Güvenli Ödeme</h1>
+    <p style="color:var(--muted);font-size:.875rem;margin-bottom:2rem;">iyzico güvencesiyle 256-bit SSL şifrelemeli ödeme.</p>
+    <div style="background:var(--dark2);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:1.5rem;min-height:400px;">
+        @if (!string.IsNullOrEmpty(html))
+        {
+            @Html.Raw(html)
+        }
+        else
+        {
+            <div style="text-align:center;padding:3rem;color:var(--muted);">
+                <p>Ödeme formu yüklenemedi. Lütfen tekrar deneyin.</p>
+                <a asp-controller="Order" asp-action="Checkout" style="color:var(--primary);">← Geri Dön</a>
+            </div>
+        }
+    </div>
+</div>

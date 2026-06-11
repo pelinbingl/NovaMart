@@ -1,0 +1,49 @@
+@model ECommerce.Models.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Giriş Yap";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="min-height:calc(100vh - 72px);display:flex;align-items:center;justify-content:center;padding:3rem 1rem;">
+    <div style="width:100%;max-width:420px;">
+        <div style="text-align:center;margin-bottom:2rem;">
+            <h1 style="font-size:2rem;font-weight:700;letter-spacing:-1px;">Hoş Geldin 👋</h1>
+            <p style="color:var(--muted);margin-top:.5rem;">Hesabına giriş yap</p>
+        </div>
+
+        <div style="background:var(--dark2);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:2rem;">
+            <form asp-controller="Account" asp-action="Login" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+                <div asp-validation-summary="All" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:.875rem 1rem;margin-bottom:1.25rem;font-size:.875rem;color:#EF4444;display:@(ViewData.ModelState.IsValid ? "none" : "block")"></div>
+
+                <div style="margin-bottom:1rem;">
+                    <label style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:.4rem;">E-posta</label>
+                    <input asp-for="Email" type="email" style="width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.625rem .875rem;color:white;font-size:.875rem;outline:none;font-family:inherit;" placeholder="ornek@email.com" />
+                </div>
+                <div style="margin-bottom:1.25rem;">
+                    <label style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:.4rem;">Şifre</label>
+                    <input asp-for="Password" type="password" style="width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.625rem .875rem;color:white;font-size:.875rem;outline:none;font-family:inherit;" placeholder="••••••••" />
+                </div>
+
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+                    <label style="display:flex;align-items:center;gap:.5rem;font-size:.875rem;cursor:pointer;">
+                        <input asp-for="RememberMe" type="checkbox" style="accent-color:var(--primary);" />
+                        Beni hatırla
+                    </label>
+                    <a href="#" style="font-size:.8rem;color:var(--primary);">Şifremi unuttum</a>
+                </div>
+
+                <button type="submit" style="width:100%;background:linear-gradient(135deg,#FF3D57,#FF8C42);color:white;border:none;border-radius:10px;padding:.875rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;">
+                    Giriş Yap
+                </button>
+            </form>
+
+            <p style="text-align:center;margin-top:1.5rem;font-size:.875rem;color:var(--muted);">
+                Hesabın yok mu?
+                <a asp-controller="Account" asp-action="Register" style="color:var(--primary);font-weight:600;">Kayıt Ol</a>
+            </p>
+        </div>
+    </div>
+</div>

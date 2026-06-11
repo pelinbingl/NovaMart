@@ -1,0 +1,121 @@
+@model ECommerce.Models.Order
+@{
+    ViewData["Title"] = "Sipariş: " + Model.OrderNumber;
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div style="display:flex;align-items:center;gap:.875rem;margin-bottom:1.5rem;">
+    <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="btn btn-secondary btn-sm">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    <div>
+        <h1 style="font-size:1.25rem;font-weight:700;">Sipariş Detayı</h1>
+        <p style="font-size:.8rem;color:var(--accent);font-family:monospace;">@Model.OrderNumber</p>
+    </div>
+</div>
+
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;align-items:start;">
+
+    <!-- LEFT -->
+    <div style="display:flex;flex-direction:column;gap:1.25rem;">
+        <!-- Items -->
+        <div class="table-card">
+            <div class="table-header"><span class="table-title">Sipariş Kalemleri</span></div>
+            <table>
+                <thead><tr><th>Ürün</th><th>Varyant</th><th>Adet</th><th>Birim Fiyat</th><th>Toplam</th></tr></thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>
+                                <div style="display:flex;align-items:center;gap:.5rem;">
+                                    <span style="font-size:1.25rem;">@item.ProductEmoji</span>
+                                    <span style="font-weight:600;font-size:.875rem;">@item.ProductName</span>
+                                </div>
+                            </td>
+                            <td style="font-size:.8rem;color:var(--muted);">@(item.SelectedVariants ?? "—")</td>
+                            <td>@item.Quantity</td>
+                            <td>₺@item.UnitPrice.ToString("N0")</td>
+                            <td style="font-weight:700;">₺@item.TotalPrice.ToString("N0")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Shipping -->
+        <div class="form-card">
+            <h3 style="font-size:.9rem;font-weight:700;margin-bottom:1rem;">Teslimat Adresi</h3>
+            <p style="font-weight:600;">@Model.ShippingFullName</p>
+            <p style="color:var(--muted);font-size:.875rem;margin-top:.25rem;">@Model.ShippingPhone</p>
+            <p style="color:var(--muted);font-size:.875rem;margin-top:.25rem;">@Model.ShippingAddressLine, @Model.ShippingDistrict / @Model.ShippingCity @Model.ShippingZip</p>
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div style="display:flex;flex-direction:column;gap:1.25rem;">
+        <!-- Summary -->
+        <div class="form-card">
+            <h3 style="font-size:.9rem;font-weight:700;margin-bottom:1rem;">Özet</h3>
+            @{
+                void Row(string label, string value, string? color = null) {
+                    <div style="display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.875rem;">
+                        <span style="color:var(--muted);">@label</span>
+                        <span style="font-weight:600;@(color != null ? $"color:{color}" : "")">@value</span>
+                    </div>
+                }
+            }
+            @{ Row("Ara Toplam", "₺" + Model.Subtotal.ToString("N0")); }
+            @{ Row("İndirim", "−₺" + Model.DiscountAmount.ToString("N0"), "var(--danger)"); }
+            @{ Row("Kargo", Model.ShippingCost > 0 ? "₺" + Model.ShippingCost.ToString("N2") : "Ücretsiz", "var(--accent)"); }
+            @{ Row("KDV", "₺" + Model.TaxAmount.ToString("N0")); }
+            <div style="display:flex;justify-content:space-between;padding:.75rem 0;font-size:1rem;font-weight:700;">
+                <span>Toplam</span>
+                <span style="color:var(--primary);">₺@Model.Total.ToString("N0")</span>
+            </div>
+        </div>
+
+        <!-- Status Update -->
+        <div class="form-card">
+            <h3 style="font-size:.9rem;font-weight:700;margin-bottom:1rem;">Durum Güncelle</h3>
+            <form asp-area="Admin" asp-controller="Orders" asp-action="UpdateStatus" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="orderId" value="@Model.Id" />
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label class="form-label">Sipariş Durumu</label>
+                    <select name="status" class="form-control">
+                        @foreach (ECommerce.Models.OrderStatus s in Enum.GetValues(typeof(ECommerce.Models.OrderStatus)))
+                        {
+                            <option value="@((int)s)" selected="@(Model.Status == s)">
+                                @s switch {
+                                    ECommerce.Models.OrderStatus.Pending => "Beklemede",
+                                    ECommerce.Models.OrderStatus.PaymentPending => "Ödeme Bekleniyor",
+                                    ECommerce.Models.OrderStatus.Paid => "Ödendi",
+                                    ECommerce.Models.OrderStatus.Processing => "Hazırlanıyor",
+                                    ECommerce.Models.OrderStatus.Shipped => "Kargoya Verildi",
+                                    ECommerce.Models.OrderStatus.Delivered => "Teslim Edildi",
+                                    ECommerce.Models.OrderStatus.Cancelled => "İptal Edildi",
+                                    ECommerce.Models.OrderStatus.Refunded => "İade Edildi",
+                                    _ => s.ToString()
+                                }
+                            </option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">
+                    <i class="fas fa-save"></i> Güncelle
+                </button>
+            </form>
+        </div>
+
+        <!-- iyzico -->
+        @if (!string.IsNullOrEmpty(Model.IyzicoPaymentId))
+        {
+            <div class="form-card">
+                <h3 style="font-size:.9rem;font-weight:700;margin-bottom:.5rem;">Ödeme Bilgisi</h3>
+                <p style="font-size:.78rem;color:var(--muted);">iyzico ID:</p>
+                <p style="font-family:monospace;font-size:.78rem;color:var(--accent);word-break:break-all;">@Model.IyzicoPaymentId</p>
+            </div>
+        }
+    </div>
+</div>

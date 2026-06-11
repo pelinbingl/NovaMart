@@ -1,0 +1,195 @@
+@{
+    ViewData["Title"] = "Anasayfa";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">
+            🔥 Yaz İndirimleri Başladı — %70'e varan fırsatlar
+        </div>
+        <h1>
+            Her şey burada,<br>
+            <span class="highlight">seni bekliyor.</span>
+        </h1>
+        <p class="hero-desc">
+            Binlerce ürün, anında teslimat ve güvenli alışveriş deneyimiyle Türkiye'nin en büyük online mağazasını keşfet.
+        </p>
+        <div class="hero-actions">
+            <a asp-controller="Category" asp-action="Index" class="btn-primary" style="padding:.875rem 2rem;font-size:1rem;">
+                <i class="fas fa-bolt"></i> Alışverişe Başla
+            </a>
+            <a href="#featured" class="btn-secondary" style="padding:.875rem 1.5rem;font-size:1rem;">
+                Kampanyaları Gör
+            </a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat-item">
+                <div class="stat-num">120K+</div>
+                <div class="stat-label">Mutlu Müşteri</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">50K+</div>
+                <div class="stat-label">Ürün Çeşidi</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">4.9★</div>
+                <div class="stat-label">Ortalama Puan</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-visual">
+        <div class="hero-card-stack">
+            <div class="floating-card main">
+                <div class="card-img">👟</div>
+                <div class="card-name">Air Zoom Pro</div>
+                <div class="card-price">₺1.299</div>
+            </div>
+            <div class="floating-card side-left">
+                <div class="card-img" style="font-size:1.75rem;">📱</div>
+                <div class="card-name" style="font-size:.75rem;">iPhone 15</div>
+                <div class="card-price" style="font-size:.875rem;">₺42.999</div>
+            </div>
+            <div class="floating-card side-right">
+                <div class="card-img" style="font-size:1.75rem;">🎧</div>
+                <div class="card-name" style="font-size:.75rem;">AirPods Pro</div>
+                <div class="card-price" style="font-size:.875rem;">₺6.499</div>
+            </div>
+            <div class="floating-tag tag1">🔥 Çok Satan</div>
+            <div class="floating-tag tag2">%40 İndirim</div>
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="section" style="padding-top:0;">
+    <div class="section-header">
+        <div>
+            <div class="section-tag">Kategoriler</div>
+            <h2 class="section-title">Ne arıyorsun?</h2>
+        </div>
+        <a asp-controller="Category" asp-action="Index" class="btn-outline">Tümünü Gör</a>
+    </div>
+    <div class="categories-grid">
+        @{
+            var categories = new[] {
+                new { Icon = "📱", Name = "Elektronik", Count = "12.4K", Bg = "rgba(255,61,87,0.12)" },
+                new { Icon = "👕", Name = "Giyim", Count = "28.7K", Bg = "rgba(124,58,237,0.12)" },
+                new { Icon = "🏠", Name = "Ev & Yaşam", Count = "9.2K", Bg = "rgba(0,212,170,0.12)" },
+                new { Icon = "💄", Name = "Kozmetik", Count = "5.8K", Bg = "rgba(255,184,0,0.12)" },
+                new { Icon = "🎮", Name = "Oyun & Hobi", Count = "3.4K", Bg = "rgba(255,61,87,0.12)" },
+                new { Icon = "🍳", Name = "Mutfak", Count = "7.1K", Bg = "rgba(124,58,237,0.12)" },
+            };
+        }
+        @foreach (var cat in categories)
+        {
+            <a asp-controller="Category" asp-action="Detail" asp-route-name="@cat.Name" class="category-card">
+                <div class="cat-icon" style="background:@cat.Bg">@cat.Icon</div>
+                <div class="cat-name">@cat.Name</div>
+                <div class="cat-count">@cat.Count ürün</div>
+            </a>
+        }
+    </div>
+</section>
+
+<!-- PROMO BANNERS -->
+<section class="section-sm" id="featured">
+    <div class="promo-grid">
+        <div class="promo-card promo-main">
+            <div class="promo-emoji">🛍️</div>
+            <div class="promo-label">Hafta Sonu Fırsatı</div>
+            <h3 class="promo-title">Elektronik'te<br>%50'ye varan indirim</h3>
+            <a asp-controller="Category" asp-action="Detail" asp-route-name="Elektronik" class="btn-primary">
+                Hemen Al <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div class="promo-card promo-side" style="color:var(--dark)">
+            <div class="promo-emoji">👟</div>
+            <div class="promo-label" style="color:rgba(10,10,15,0.6)">Yeni Sezon</div>
+            <h3 class="promo-title">Spor Ayakkabı<br>Koleksiyonu</h3>
+            <a href="#" class="btn-secondary" style="background:rgba(10,10,15,0.2);color:#fff;border:none;">
+                Keşfet <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section class="section">
+    <div class="section-header">
+        <div>
+            <div class="section-tag">Öne Çıkanlar</div>
+            <h2 class="section-title">Popüler Ürünler</h2>
+        </div>
+        <a asp-controller="Product" asp-action="Index" class="btn-outline">Tümünü Gör</a>
+    </div>
+
+    <div class="products-grid">
+        @{
+            var products = new[] {
+                new { Id = 1, Emoji = "📱", Name = "Samsung Galaxy S24 Ultra", Category = "Elektronik", Price = "₺45.999", OldPrice = "₺52.999", Rating = "4.8", Reviews = "2.1K", Badge = "sale", BadgeText = "%13 İndirim" },
+                new { Id = 2, Emoji = "👟", Name = "Nike Air Max 270 React", Category = "Spor", Price = "₺3.299", OldPrice = "", Rating = "4.9", Reviews = "856", Badge = "new", BadgeText = "Yeni" },
+                new { Id = 3, Emoji = "🎧", Name = "Sony WH-1000XM5", Category = "Elektronik", Price = "₺8.499", OldPrice = "₺10.999", Rating = "4.7", Reviews = "1.4K", Badge = "hot", BadgeText = "🔥 Hot" },
+                new { Id = 4, Emoji = "💻", Name = "MacBook Air M3 13\"", Category = "Elektronik", Price = "₺62.999", OldPrice = "", Rating = "4.9", Reviews = "3.2K", Badge = "new", BadgeText = "Yeni" },
+                new { Id = 5, Emoji = "🕶️", Name = "Ray-Ban Aviator Classic", Category = "Aksesuar", Price = "₺2.899", OldPrice = "₺3.499", Rating = "4.6", Reviews = "428", Badge = "sale", BadgeText = "%17 İndirim" },
+                new { Id = 6, Emoji = "⌚", Name = "Apple Watch Series 9", Category = "Elektronik", Price = "₺18.999", OldPrice = "", Rating = "4.8", Reviews = "975", Badge = "hot", BadgeText = "🔥 Hot" },
+                new { Id = 7, Emoji = "🎮", Name = "PlayStation 5 Slim", Category = "Oyun", Price = "₺22.499", OldPrice = "₺24.999", Rating = "4.9", Reviews = "5.7K", Badge = "sale", BadgeText = "%10 İndirim" },
+                new { Id = 8, Emoji = "📸", Name = "Canon EOS R50 Kit", Category = "Fotoğraf", Price = "₺28.999", OldPrice = "", Rating = "4.7", Reviews = "312", Badge = "new", BadgeText = "Yeni" },
+            };
+        }
+        @foreach (var p in products)
+        {
+            <div class="product-card" onclick="window.location='/Product/Detail/@p.Id'">
+                <div class="product-img">
+                    <span>@p.Emoji</span>
+                    <div class="product-actions">
+                        <div class="action-btn" title="Favorile" onclick="event.stopPropagation()">
+                            <i class="far fa-heart" style="font-size:.875rem;"></i>
+                        </div>
+                        <div class="action-btn" title="Hızlı Önizleme" onclick="event.stopPropagation()">
+                            <i class="far fa-eye" style="font-size:.875rem;"></i>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(p.Badge))
+                    {
+                        <span class="product-badge badge-@p.Badge">@p.BadgeText</span>
+                    }
+                </div>
+                <div class="product-info">
+                    <div class="product-category">@p.Category</div>
+                    <div class="product-name">@p.Name</div>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-count">@p.Rating (@p.Reviews)</span>
+                    </div>
+                    <div class="product-footer">
+                        <div>
+                            <span class="product-price">@p.Price</span>
+                            @if (!string.IsNullOrEmpty(p.OldPrice))
+                            {
+                                <span class="product-price-old">@p.OldPrice</span>
+                            }
+                        </div>
+                        <button class="add-to-cart" onclick="event.stopPropagation(); addToCart('@p.Name')" title="Sepete Ekle">
+                            <i class="fas fa-plus" style="font-size:.8rem;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- NEWSLETTER -->
+<div class="newsletter">
+    <h2>Fırsatları kaçırma! 🎉</h2>
+    <p>E-posta adresini bırak, indirim ve kampanyalardan ilk sen haberdar ol.</p>
+    <div class="newsletter-form">
+        <input type="email" placeholder="ornek@email.com" />
+        <button class="btn-primary">
+            <i class="fas fa-paper-plane"></i> Abone Ol
+        </button>
+    </div>
+</div>

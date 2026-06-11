@@ -1,0 +1,186 @@
+@{
+    ViewData["Title"] = "Sepetim";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="breadcrumb">
+    <a asp-controller="Home" asp-action="Index">Anasayfa</a>
+    <span class="sep">/</span>
+    <span class="current">Sepetim</span>
+</div>
+
+<div class="cart-layout">
+    <!-- CART ITEMS -->
+    <div>
+        <div class="cart-header">
+            <h1 class="section-title">Sepetim</h1>
+            <p class="cart-count">3 ürün</p>
+        </div>
+
+        @{
+            var cartItems = new[] {
+                new { Id=1, Emoji="📱", Name="Samsung Galaxy S24 Ultra 512GB", Variant="Titanium Black", Price=45999, OldPrice=52999, Qty=1 },
+                new { Id=2, Emoji="🎧", Name="Sony WH-1000XM5 Kulaklık", Variant="Siyah", Price=8499, OldPrice=10999, Qty=2 },
+                new { Id=3, Emoji="⌚", Name="Apple Watch Series 9 GPS", Variant="Midnight, 45mm", Price=18999, OldPrice=0, Qty=1 },
+            };
+        }
+
+        <div id="cart-items">
+            @foreach (var item in cartItems)
+            {
+                <div class="cart-item" id="item-@item.Id">
+                    <div class="cart-item-img">@item.Emoji</div>
+                    <div>
+                        <div class="cart-item-name">@item.Name</div>
+                        <div class="cart-item-variant">@item.Variant</div>
+                        <div class="cart-item-price-row">
+                            <span class="cart-item-price">₺@item.Price.ToString("N0")</span>
+                            @if (item.OldPrice > 0)
+                            {
+                                <span style="font-size:.8rem;color:var(--muted);text-decoration:line-through;">₺@item.OldPrice.ToString("N0")</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="cart-item-controls">
+                        <button class="remove-btn" onclick="removeItem(@item.Id)">
+                            <i class="fas fa-trash-alt"></i> Kaldır
+                        </button>
+                        <div class="qty-control">
+                            <button class="qty-btn" onclick="changeCartQty(@item.Id, -1)">−</button>
+                            <div class="qty-num" id="qty-@item.Id">@item.Qty</div>
+                            <button class="qty-btn" onclick="changeCartQty(@item.Id, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- EMPTY STATE (hidden by default) -->
+        <div class="empty-state" id="empty-cart" style="display:none;">
+            <div class="empty-state-icon">🛒</div>
+            <h3>Sepetiniz boş</h3>
+            <p>Alışverişe başlamak için ürünlere göz atın.</p>
+            <a asp-controller="Category" asp-action="Index" class="btn-primary">
+                <i class="fas fa-arrow-left"></i> Alışverişe Dön
+            </a>
+        </div>
+
+        <!-- CONTINUE SHOPPING -->
+        <div style="margin-top:1.5rem;">
+            <a asp-controller="Category" asp-action="Index" class="btn-secondary">
+                <i class="fas fa-arrow-left"></i> Alışverişe Devam Et
+            </a>
+        </div>
+    </div>
+
+    <!-- ORDER SUMMARY -->
+    <div class="cart-summary">
+        <h2 class="summary-title">Sipariş Özeti</h2>
+
+        <div class="summary-row">
+            <span class="summary-label">Ara Toplam</span>
+            <span class="summary-value" id="subtotal">₺82.496</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">İndirim</span>
+            <span class="summary-value discount" id="discount">−₺10.498</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Kargo</span>
+            <span class="summary-value free">Ücretsiz 🎉</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">KDV (%18)</span>
+            <span class="summary-value" id="vat">₺12.960</span>
+        </div>
+
+        <div class="summary-row total">
+            <span>Toplam</span>
+            <span class="total-value" id="total">₺71.998</span>
+        </div>
+
+        <!-- COUPON -->
+        <div class="coupon-input">
+            <input type="text" id="couponCode" placeholder="Kupon kodu gir..." />
+            <button class="btn-primary" onclick="applyCoupon()" style="padding:.625rem 1rem;">
+                Uygula
+            </button>
+        </div>
+        <p id="coupon-msg" style="font-size:.78rem;color:var(--accent);display:none;">
+            ✅ Kupon uygulandı! %10 ek indirim
+        </p>
+
+        <button class="btn-primary checkout-btn" onclick="showToast('🎉 Ödeme sayfasına yönlendiriliyorsunuz...')">
+            <i class="fas fa-lock"></i> Güvenli Ödemeye Geç
+        </button>
+
+        <p class="cart-note">
+            <i class="fas fa-shield-alt" style="color:var(--accent);"></i>
+            256-bit SSL ile şifrelenmiş güvenli ödeme
+        </p>
+
+        <div class="payment-icons">
+            <span class="pay-icon">VISA</span>
+            <span class="pay-icon">MC</span>
+            <span class="pay-icon">AMEX</span>
+            <span class="pay-icon">PayTR</span>
+            <span class="pay-icon">İyzico</span>
+            <span class="pay-icon">KPS</span>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+const qtys = { 1: 1, 2: 2, 3: 1 };
+const prices = { 1: 45999, 2: 8499, 3: 18999 };
+let removed = [];
+
+function changeCartQty(id, dir) {
+    qtys[id] = Math.max(1, (qtys[id] || 1) + dir);
+    document.getElementById('qty-' + id).textContent = qtys[id];
+    updateSummary();
+}
+
+function removeItem(id) {
+    const el = document.getElementById('item-' + id);
+    el.style.opacity = '0';
+    el.style.transform = 'translateX(40px)';
+    el.style.transition = 'all .3s ease';
+    setTimeout(() => {
+        el.remove();
+        removed.push(id);
+        updateSummary();
+        if (removed.length >= 3) {
+            document.getElementById('cart-items').style.display = 'none';
+            document.getElementById('empty-cart').style.display = 'block';
+        }
+    }, 300);
+    showToast('🗑️ Ürün sepetten kaldırıldı');
+}
+
+function updateSummary() {
+    let sub = 0;
+    for (let id in qtys) {
+        if (!removed.includes(parseInt(id))) sub += prices[id] * qtys[id];
+    }
+    document.getElementById('subtotal').textContent = '₺' + sub.toLocaleString('tr-TR');
+    const disc = Math.round(sub * 0.127);
+    document.getElementById('discount').textContent = '−₺' + disc.toLocaleString('tr-TR');
+    const net = sub - disc;
+    const vat = Math.round(net * 0.18);
+    document.getElementById('vat').textContent = '₺' + vat.toLocaleString('tr-TR');
+    document.getElementById('total').textContent = '₺' + net.toLocaleString('tr-TR');
+}
+
+function applyCoupon() {
+    const code = document.getElementById('couponCode').value.toUpperCase();
+    if (code === 'NOVA10' || code === 'INDIRIM') {
+        document.getElementById('coupon-msg').style.display = 'block';
+        showToast('🎟️ Kupon kodu uygulandı!');
+    } else {
+        showToast('❌ Geçersiz kupon kodu');
+    }
+}
+</script>
+}
